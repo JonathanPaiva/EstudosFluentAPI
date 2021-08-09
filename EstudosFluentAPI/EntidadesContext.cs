@@ -34,7 +34,7 @@ namespace EstudosFluentAPI
                 .ToTable("Pessoas") // Define o nome para a Entidade(Tabela) no BD
                 .HasKey(t => t.Codigo); // Define qual será Primary Key da tabela
 
-
+            //Métodos aplicados nas propriedades
             modelBuilder.Entity<Entidades.Produto>()
                 .HasKey(p => new { p.CodigoProduto, p.Referencia }); //Criar uma chave composta na tabela
 
@@ -43,6 +43,17 @@ namespace EstudosFluentAPI
 
             modelBuilder.Entity<Entidades.Grupo>()
                 .HasAlternateKey(g => g.NomeGrupo); // Criar uma restrição exclusiva diferentes daquelas que foram a chave primária.
+
+            modelBuilder.Entity<Entidades.Cliente>()
+                .Property(c => c.Nome)
+                .HasColumnName("NomeDoCliente") //Define o nome da Coluna na tabela
+                .HasMaxLength(250) // Define o tamanho máximo do campo na tabela
+                .IsRequired(); // Denife a coluna como não anulável - is not null
+
+            modelBuilder.Entity<Entidades.Cliente>()
+                .Property(c => c.Endereco)
+                .HasColumnType("varchar(150)") //Define o tipo específico do campo na tabela
+                .HasDefaultValue("Digite o Endereco Completo"); //Define um valor padrão para o campo na tabela.
 
         }
     }
