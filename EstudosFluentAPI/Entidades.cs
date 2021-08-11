@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EstudosFluentAPI
 {
-    class Entidades
+    public class Entidades
     {
 
         public class Produto
