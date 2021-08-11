@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+
 using System;
 
 namespace EstudosFluentAPI
@@ -20,20 +21,25 @@ namespace EstudosFluentAPI
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
+        { 
             //Configurações sobre Fluent API
-
             /*modelBuilder.Entity(typeof("Nome da Entidade"))... // Configuração não genérica */
             /*modelBuilder.Entity("Nome da Entidade")... // Configuração não genérica */
             /*modelBuilder.Entity<Nome da Entidade>()... // Configuração genérica */
 
             modelBuilder.HasDefaultSchema("Admin"); //Define o Schema utilizado nas tabelas do Banco de Dados
+
             modelBuilder.Ignore<Entidades.Fabricante>();  //Define se a Tabela vai ser encaminhado para a migration para ser criada no BD
 
-            modelBuilder.Entity<Entidades.Cliente>()
-                .ToTable("Pessoas") // Define o nome para a Entidade(Tabela) no BD
-                .HasKey(t => t.Codigo); // Define qual será Primary Key da tabela
-
+            //Configuração das entidades via Fluent API pode ser feito separadamente por entidades da seguinte forma abaixo: 
+            modelBuilder.ApplyConfiguration(new ClienteConfiguration());
+            modelBuilder.ApplyConfiguration(new FabricanteConfiguration());
+            modelBuilder.ApplyConfiguration(new GrupoConfiguration());
+            modelBuilder.ApplyConfiguration(new ProdutoConfiguration());
+            //Uma vez utilizado esses métodos enxuga mais o código do OnMoedlCreating()
+            //---------------------------------------------------------
+            
+            /*
             //Métodos aplicados nas propriedades
             modelBuilder.Entity<Entidades.Produto>()
                 .HasKey(p => new { p.CodigoProduto, p.Referencia }); //Criar uma chave composta na tabela
@@ -43,6 +49,10 @@ namespace EstudosFluentAPI
 
             modelBuilder.Entity<Entidades.Grupo>()
                 .HasAlternateKey(g => g.NomeGrupo); // Criar uma restrição exclusiva diferentes daquelas que foram a chave primária.
+
+            modelBuilder.Entity<Entidades.Cliente>()
+                .ToTable("Pessoas") // Define o nome para a Entidade(Tabela) no BD
+                .HasKey(t => t.Codigo); // Define qual será Primary Key da tabela
 
             modelBuilder.Entity<Entidades.Cliente>()
                 .Property(c => c.Nome)
@@ -55,6 +65,25 @@ namespace EstudosFluentAPI
                 .HasColumnType("varchar(150)") //Define o tipo específico do campo na tabela
                 .HasDefaultValue("Digite o Endereco Completo"); //Define um valor padrão para o campo na tabela.
 
+            //Apenas para nível de conhecimento do faz cada propriedade.
+            //-----------------------------------------------------
+            modelBuilder.Entity<Entidades.Fabricante>()
+                .Property(f => f.ID)
+                .ValueGeneratedNever(); //Especifica que o valor para a coluna selecionada nunca será gerado automáticamente pelo banco de dados.
+
+            modelBuilder.Entity<Entidades.Produto>()
+                .Property(p => p.DataCriacao)
+                .ValueGeneratedOnAdd(); //Indica que o valor para a coluna selecionada vai ser gerado sempre que uma nova entidade for adicionada ao banco dados 
+
+            modelBuilder.Entity<Entidades.Produto>()
+                .Property(p => p.DataAtualizado)
+                .ValueGeneratedOnAdd(); // Espedifica que o valor para a coluna selecionada será gerado sempre que uma nova entidade for adicionada ou uma entidade existente for modificada
+
+            modelBuilder.Entity<Entidades.Produto>()
+                .Property(p => p.Desativado)
+                .IsConcurrencyToken(); // Define que a propriedade vai tomar parte no gerenciamento de concorrencia.
+            //-----------------------------------------------------
+            /**/
         }
     }
 }

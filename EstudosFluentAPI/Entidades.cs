@@ -15,6 +15,9 @@ namespace EstudosFluentAPI
             public string Referencia { get; set; }
             public string NomeProduto { get; set; }
             public double PrecoProduto { get; set; }
+            public DateTime DataCriacao { get; set; }
+            public DateTime DataAtualizado { get; set; }
+            public bool Desativado { get; set; }
         }
             
         public class Grupo
@@ -28,8 +31,9 @@ namespace EstudosFluentAPI
             public int Codigo { get; set; }
             public string Nome { get; set; }
             public string Endereco { get; set; }
-        }
 
+        
+        }
 
         public class Fabricante
         {
