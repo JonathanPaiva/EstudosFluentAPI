@@ -14,31 +14,37 @@ namespace EstudosFluentAPI
 
         public DbSet<Entidades.Cliente  > Clientes { get; set; }
 
+        public DbSet<Entidades.Aluno> Alunos { get; set; }
+        public DbSet<Entidades.AlunoEndereco> Alunos_Enderecos { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Data Source = localhost\\sqlexpress; Initial Catalog = " +
                                         "EstudosDBFluentAPI;Persist Security Info=True;User ID=sa;Password=qaz@123");
         }
-
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        { 
+        {
             //Configurações sobre Fluent API
             /*modelBuilder.Entity(typeof("Nome da Entidade"))... // Configuração não genérica */
             /*modelBuilder.Entity("Nome da Entidade")... // Configuração não genérica */
             /*modelBuilder.Entity<Nome da Entidade>()... // Configuração genérica */
 
+            //  Configurações padrões de Fluent API - Modelos, Entidades e Propriedades
             modelBuilder.HasDefaultSchema("Admin"); //Define o Schema utilizado nas tabelas do Banco de Dados
 
             modelBuilder.Ignore<Entidades.Fabricante>();  //Define se a Tabela vai ser encaminhado para a migration para ser criada no BD
 
+            /*
             //Configuração das entidades via Fluent API pode ser feito separadamente por entidades da seguinte forma abaixo: 
-            modelBuilder.ApplyConfiguration(new ClienteConfiguration());
-            modelBuilder.ApplyConfiguration(new FabricanteConfiguration());
-            modelBuilder.ApplyConfiguration(new GrupoConfiguration());
-            modelBuilder.ApplyConfiguration(new ProdutoConfiguration());
-            //Uma vez utilizado esses métodos enxuga mais o código do OnMoedlCreating()
-            //---------------------------------------------------------
-            
+                modelBuilder.ApplyConfiguration(new ClienteConfiguration());
+                modelBuilder.ApplyConfiguration(new FabricanteConfiguration());
+                modelBuilder.ApplyConfiguration(new GrupoConfiguration());
+                modelBuilder.ApplyConfiguration(new ProdutoConfiguration());
+                //Uma vez utilizado esses métodos enxuga mais o código do OnMoedlCreating()
+                //---------------------------------------------------------
+            /**/
+
             /*
             //Métodos aplicados nas propriedades
             modelBuilder.Entity<Entidades.Produto>()
@@ -83,6 +89,22 @@ namespace EstudosFluentAPI
                 .Property(p => p.Desativado)
                 .IsConcurrencyToken(); // Define que a propriedade vai tomar parte no gerenciamento de concorrencia.
             //-----------------------------------------------------
+            /**/
+
+            // Configurações de Fluent API - Relacionamentos
+            
+            //Tipo de relacionamento um-para-um
+            modelBuilder.Entity<Entidades.Aluno>()                              //Definie a Entidade na qual vai aplicar a configuração do relacionamento              
+                .HasOne<Entidades.AlunoEndereco>(e => e.Endereco)               //Define a primeira estremidade do relacionamento 
+                .WithOne(a => a.Aluno)                                          //Define a segunda estremidade do relacionamento
+                .HasForeignKey<Entidades.AlunoEndereco>(a => a.AlunoID);        //Define a chave estrangeira na estreminada dependente
+            //*********************************
+
+            //Tipo de relacionamento um-para-muitos
+
+
+
+
             /**/
         }
     }

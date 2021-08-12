@@ -19,7 +19,7 @@ namespace EstudosFluentAPI
             public DateTime DataAtualizado { get; set; }
             public bool Desativado { get; set; }
         }
-            
+
         public class Grupo
         {
             public int ID { get; set; }
@@ -31,14 +31,27 @@ namespace EstudosFluentAPI
             public int Codigo { get; set; }
             public string Nome { get; set; }
             public string Endereco { get; set; }
-
-        
         }
 
         public class Fabricante
         {
             public int ID { get; set; }
             public string NomeFabricante { get; set; }
+        }
+
+        public class Aluno
+        {
+            public int ID { get; set; }
+            public string Nome { get; set; }
+            public AlunoEndereco Endereco { get; set; }
+        }
+
+        public class AlunoEndereco
+        {
+            public int IDEndereco { get; set; }
+            public string EndCompleto { get; set; }
+            public int AlunoID { get; set; }
+            public Aluno Aluno { get; set; }
         }
     }
 }
