@@ -13,7 +13,8 @@ namespace EstudosFluentAPI
         public DbSet<Entidades.Fabricante> Fabricantes { get; set; }
 
         public DbSet<Entidades.Cliente  > Clientes { get; set; }
-
+        public DbSet<Entidades.Cliente_Endereco> Clientes_Enderecos { get; set; }
+        public DbSet<Entidades.Venda> Vendas { get; set; }
         public DbSet<Entidades.Aluno> Alunos { get; set; }
         public DbSet<Entidades.AlunoEndereco> Alunos_Enderecos { get; set; }
 
@@ -101,9 +102,43 @@ namespace EstudosFluentAPI
             //*********************************
 
             //Tipo de relacionamento um-para-muitos
+            //opção 1 
+            /*Deixando dessa maneira fica como relacionamento um-para-muitos não obrigatório, ou seja, caso a entidade pai seja excluída deixaria as filhos orfãs
+            porém, no Banco de Dados não permitir Relacionamentos com Chaves Nulas, seria necessário tratar informação
+            Onde um 'Cliente' poderia ter vários 'Enderecos' */ 
+            modelBuilder.Entity<Entidades.Cliente>() //Define a Entidade 'Pai' a ser feito o relacionamento
+                .HasMany(c => c.ClienteEndereco)     //Define a chave definida na entidade para se relacionar, a Icollection
+                .WithOne(ce => ce.Cliente);          //Define a chave definida na entidade filho para se relacionar
+                
+                
+           //opção 2
+           /*Definindo dessa forma pode ser configurado restrições, permitindo obrigatoriedade no relacionamento, definindo chave estrangeira, excluindo em cascata, etc..
+            Na situação onde */
+           modelBuilder.Entity<Entidades.ClienteEndereco>() //Define a Entidade a se relacionar com o Pai
+                .HasOne(ce=> ce.Cliente)                    //Define a propriedade inlcuída na Entidade Filha para se relacionar
+                .WithMany(c=> c.ClienteEndereco)            //Define a Entidade Pai do Relacionamento
+                //Métodos para incluir restrições
+                .OnDelete(DeleteBehavior.Cascade);          //Define uma exlusão em cascata 
 
+            //opção 3
+            /*Definindo dessa forma pode ser configurado restrições, permitindo obrigatoriedade no relacionamento, definindo chave estrangeira, excluindo em cascata, etc..
+             Na situação onde */
+            modelBuilder.Entity<Entidades.ClienteEndereco>() //Define a Entidade a se relacionar com o Pai
+                 .HasOne(ce => ce.Cliente)                    //Define a propriedade inlcuída na Entidade Filha para se relacionar
+                 .WithMany(c => c.ClienteEndereco)            //Define a Entidade Pai do 
+                 //Métodos para incluir restrições
+                 .IsRequired();          //Define um relacionamento obrigatório, criando um chave ClienteID na Entidades.ClienteEnderecos
 
+            //opção 4
+            /*Definindo dessa forma pode ser configurado restrições, permitindo obrigatoriedade no relacionamento, definindo chave estrangeira, excluindo em cascata, etc..
+             Na situação onde */
+            modelBuilder.Entity<Entidades.ClienteEndereco>() //Define a Entidade a se relacionar com o Pai
+                 .HasOne(ce => ce.Cliente)                    //Define a propriedade inlcuída na Entidade Filha para se relacionar
+                 .WithMany(c => c.ClienteEndereco)            //Define a Entidade Pai do 
+                 //Métodos para incluir restrições
+                 .HasForeignKey(ce=> ce.ClienteID); // Define um chave fixada de acordo com a informação descrita na entidade
 
+                //Lembrando que para esses relacionamentos necessário seria necessário apenas uma opção e um tipo de restrição, dependendo das informações das entidades
 
             /**/
         }

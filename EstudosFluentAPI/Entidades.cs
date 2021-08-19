@@ -31,6 +31,15 @@ namespace EstudosFluentAPI
             public int Codigo { get; set; }
             public string Nome { get; set; }
             public string Endereco { get; set; }
+            public ICollection<ClienteEndereco> ClienteEndereco { get; set; }
+        }
+
+        public class ClienteEndereco
+        {
+            public int ID { get; set; }
+            public string EndCompleto { get; set; }
+            public int ClienteID { get; set; }
+            public Cliente Cliente{ get; set; }
         }
 
         public class Fabricante
@@ -52,6 +61,13 @@ namespace EstudosFluentAPI
             public string EndCompleto { get; set; }
             public int AlunoID { get; set; }
             public Aluno Aluno { get; set; }
+        }
+
+        public class Venda
+        {
+            public int ID { get; set; }
+            public DateTime  DataVenda { get; set; }
+            public int IDCliente { get; set; }
         }
     }
 }
