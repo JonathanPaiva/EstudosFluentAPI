@@ -62,6 +62,27 @@ namespace EstudosFluentAPI
             public int AlunoID { get; set; }
             public Aluno Aluno { get; set; }
         }
+        public class CadastroAluno
+        {
+            public int CodAluno { get; set; }
+            public string Nome { get; set; }
+            public ICollection<AlunoCurso> AlunosCursos { get; set; }
+        }
+
+        public class Curso
+        {
+            public int CodCurso { get; set; }
+            public string Descricao { get; set; }
+            public ICollection<AlunoCurso> AlunosCursos { get; set; }
+        }
+
+        public class AlunoCurso
+        {
+            public int CodAluno { get; set; }
+            public CadastroAluno CadastroAluno { get; set; }
+            public int CodCurso { get; set; }
+            public Curso Curso { get; set; }
+        }
 
         public class Venda
         {

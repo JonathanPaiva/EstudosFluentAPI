@@ -13,10 +13,12 @@ namespace EstudosFluentAPI
         public DbSet<Entidades.Fabricante> Fabricantes { get; set; }
 
         public DbSet<Entidades.Cliente  > Clientes { get; set; }
-        public DbSet<Entidades.Cliente_Endereco> Clientes_Enderecos { get; set; }
+        public DbSet<Entidades.ClienteEndereco> Clientes_Enderecos { get; set; }
         public DbSet<Entidades.Venda> Vendas { get; set; }
         public DbSet<Entidades.Aluno> Alunos { get; set; }
         public DbSet<Entidades.AlunoEndereco> Alunos_Enderecos { get; set; }
+        public DbSet<Entidades.Curso> Cursos { get; set; }
+        public DbSet<Entidades.CadastroAluno> CadastroAlunos { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -138,9 +140,39 @@ namespace EstudosFluentAPI
                  //Métodos para incluir restrições
                  .HasForeignKey(ce=> ce.ClienteID); // Define um chave fixada de acordo com a informação descrita na entidade
 
-                //Lembrando que para esses relacionamentos necessário seria necessário apenas uma opção e um tipo de restrição, dependendo das informações das entidades
+            //Lembrando que para esses relacionamentos necessário seria necessário apenas uma opção e um tipo de restrição, dependendo das informações das entidades
+            /*******************************************************/
 
-            /**/
+            //Tipo Relacionamento - Muitos-para-Muitos
+            
+
+        //Caso não seja seguido as convenções nas criações dos campos das entidades, seria necessário definir a chave primária das entidades a se relacionarem com a entidade de junção
+            modelBuilder.Entity<Entidades.CadastroAluno>().HasKey(a => a.CodAluno);
+            modelBuilder.Entity<Entidades.Curso>().HasKey(c => c.CodCurso);
+
+            //Necessário definir as chaves compostas na entidade de junção
+            modelBuilder.Entity<Entidades.AlunoCurso>().HasKey(ac => new { ac.CodAluno, ac.CodCurso });
+
+            //Definindo o relacionamento das entidades e entidade de junção
+            //Primeira Entidade 
+            modelBuilder.Entity<Entidades.AlunoCurso>()
+                .HasOne<Entidades.CadastroAluno>(a => a.CadastroAluno)
+                .WithMany(ac => ac.AlunosCursos)
+                .HasForeignKey(p => p.CodAluno);
+
+            //Primeira Entidade  
+            modelBuilder.Entity<Entidades.AlunoCurso>()
+                .HasOne<Entidades.CadastroAluno>(a => a.CadastroAluno)
+                .WithMany(ac => ac.AlunosCursos)
+                .HasForeignKey(p => p.CodAluno);
+
+            //Segunda Entidade 
+            modelBuilder.Entity<Entidades.AlunoCurso>()
+                .HasOne<Entidades.Curso>(c => c.Curso)
+                .WithMany(ac => ac.AlunosCursos)
+                .HasForeignKey(p => p.CodCurso);
+
+            /*******************************************************/
         }
     }
 }
